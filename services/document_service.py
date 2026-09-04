@@ -1,0 +1,60 @@
+import tempfile
+import os
+
+from langchain_community.document_loaders import PyMuPDFLoader, TextLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import Chroma
+
+# Charger un fichier téléchargé
+def load_uploaded_file(uploaded_file) -> list:
+    suffix = ".pdf" if uploaded_file.name.lower().endswith(".pdf") else ".txt"
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+        tmp.write(uploaded_file.getvalue())
+        tmp_path = tmp.name
+
+    try:
+        if suffix == ".pdf":
+            loader = PyMuPDFLoader(tmp_path)
+        else:
+            loader = TextLoader(tmp_path, encoding="utf-8")
+
+        docs = loader.load()
+
+        # CONSERVATION DU NOM DU FICHIER exigée par la consigne
+        for doc in docs:
+            doc.metadata["source"] = uploaded_file.name
+            # normalisation page en 1-indexé pour l'affichage
+            if "page" in doc.metadata:
+                doc.metadata["page"] = int(doc.metadata["page"]) + 1
+            else:
+                doc.metadata["page"] = 1  # cas du .txt
+
+        return docs
+
+    finally:
+        if os.path.exists(tmp_path):
+            os.unlink(tmp_path)
+
+# decouper le doc en chunks
+# Justifier taille des chunks, taille du chevauchement ou overlap
+def split_documents(documents):
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=200
+    )
+    return splitter.split_documents(documents)
+
+# charger le modele de vecteurs d'embedding
+def get_embeddings():
+    return HuggingFaceEmbeddings(
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
+    )
+
+# inserer vector dans la base chroma
+def create_vector_store(chunks, embeddings):
+    return Chroma.from_documents(
+        documents=chunks,
+        embedding=embeddings
+    )
