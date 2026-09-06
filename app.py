@@ -74,7 +74,7 @@ with st.sidebar:
     # 1. Téléchargement
     uploaded_files = st.file_uploader(
         "Télécharger PDF ou TXT",
-        type=["pdf", "txt"],
+        type=["pdf", "txt", "md"],
         accept_multiple_files=True
     )
 
