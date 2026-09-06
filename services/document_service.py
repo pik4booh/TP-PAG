@@ -17,6 +17,8 @@ def load_uploaded_file(uploaded_file) -> list:
     try:
         if suffix == ".pdf":
             loader = PyMuPDFLoader(tmp_path)
+        elif suffix == ".md":
+            loader = TextLoader(tmp_path, encoding="utf-8")
         else:
             loader = TextLoader(tmp_path, encoding="utf-8")
 
@@ -40,6 +42,19 @@ def load_uploaded_file(uploaded_file) -> list:
 # decouper le doc en chunks
 # Justifier taille des chunks, taille du chevauchement ou overlap
 def split_documents(documents):
+    """
+    Découpage des documents en chunks de 1000 caractères avec un
+    chevauchement de 200 caractères.
+
+    Justification :
+    - chunk_size=1000 : compromis entre contexte suffisant pour le LLM
+      et précision de la recherche sémantique. Trop petit = perte de
+      contexte ; trop grand = bruit et dépassement de la fenêtre du modèle.
+    - chunk_overlap=200 (20%) : garantit qu'une phrase à cheval sur deux
+      chunks n'est pas coupée, préservant la continuité sémantique.
+    - RecursiveCharacterTextSplitter : respecte les séparateurs naturels
+      (paragraphes > phrases > mots) pour des coupes cohérentes.
+    """
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,
         chunk_overlap=200
@@ -53,8 +68,9 @@ def get_embeddings():
     )
 
 # inserer vector dans la base chroma
-def create_vector_store(chunks, embeddings):
+def create_vector_store(chunks, embeddings, persist_dir="./chroma_db"):
     return Chroma.from_documents(
         documents=chunks,
-        embedding=embeddings
+        embedding=embeddings,
+        persist_directory=persist_dir
     )
