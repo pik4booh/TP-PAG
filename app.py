@@ -148,7 +148,7 @@ def load_embeddings():
 
 @st.cache_resource
 def load_llm():
-    return get_local_llm(model_name="mistral")
+    return get_local_llm(model_name="llama3.2:1b")
 
 
 embeddings = load_embeddings()
@@ -247,7 +247,7 @@ question = st.chat_input("Your question...")
 
 if question:
     st.session_state.messages.append({"role": "user", "content": question})
-    with st.chat_message("user", avatar="🧑"):
+    with st.chat_message("user", avatar="🍊"):
         st.markdown(question)
 
     with st.chat_message("assistant", avatar="🧿"):
@@ -283,7 +283,7 @@ if question:
                     except Exception as e:
                         answer = (
                             "LLM local indisponible. Lance Ollama "
-                            f"(`ollama serve`, `ollama pull mistral`). Erreur : {e}"
+                            f"(`ollama serve`, `ollama pull llama3.2:1b`). Erreur : {e}"
                         )
 
                 st.markdown(answer)

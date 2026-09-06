@@ -50,7 +50,7 @@ RÉPONSE :"""
     )
 
 
-def get_local_llm(model_name: str = "mistral"):
+def get_local_llm(model_name: str = "llama3.2:1b") -> OllamaLLM:
     """
     Étape 4.3 : modèle local via Ollama. Aucun appel API externe.
     """
