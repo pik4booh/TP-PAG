@@ -340,8 +340,3 @@ with col_studio:
         st.divider()
         st.caption("Studio output will be saved here once implemented.")
 
-
-# =========================================================
-# PIED DE PAGE
-# =========================================================
-st.caption("My Third Eye peut se tromper ; vérifiez les sources.")
