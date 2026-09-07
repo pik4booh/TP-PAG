@@ -43,17 +43,10 @@ def load_uploaded_file(uploaded_file) -> list:
 # Justifier taille des chunks, taille du chevauchement ou overlap
 def split_documents(documents):
     """
-    Découpage des documents en chunks de 1000 caractères avec un
-    chevauchement de 200 caractères.
-
     Justification :
-    - chunk_size=1000 : compromis entre contexte suffisant pour le LLM
-      et précision de la recherche sémantique. Trop petit = perte de
-      contexte ; trop grand = bruit et dépassement de la fenêtre du modèle.
-    - chunk_overlap=200 (20%) : garantit qu'une phrase à cheval sur deux
-      chunks n'est pas coupée, préservant la continuité sémantique.
-    - RecursiveCharacterTextSplitter : respecte les séparateurs naturels
-      (paragraphes > phrases > mots) pour des coupes cohérentes.
+    Chunk_size=1000 : compromis raisonnable pour le RAG afin d'obtenir les informastions pertinentes sans perdre le contexte.
+    Chunk_overlap=200 (20%) : pour éviter de perdre une information située à la frontière entre deux chunks
+    
     """
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,

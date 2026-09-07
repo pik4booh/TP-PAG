@@ -38,7 +38,7 @@ h1, h2, h3, h4, textarea, input, button {
 
 /* Fond gris clair NotebookLM */
 .stApp {
-    background-color: #B3EBF2;
+    background-color: #cfe4ff;
     color: #1f2733;
 }
 
@@ -190,7 +190,7 @@ embeddings = load_embeddings()
 # =========================================================
 st.markdown("""
 <div style="display:flex; align-items:center; gap:12px; padding:2px 0 14px 4px;">
-    <span style="font-size:26px; font-weight:700; color:#B3EBF2;">My Third Eye</span>
+    <span style="font-size:26px; font-weight:700; color:#cfe4ff;">My Third Eye</span>
 </div>
 """, unsafe_allow_html=True)
 
@@ -215,7 +215,7 @@ with col_sources:
             accept_multiple_files=True
         )
 
-        if st.button("Indexer le(s) document(s)", use_container_width=True):
+        if st.button("Index document(s)", use_container_width=True):
             if not uploaded_files:
                 st.warning("Select at least one file.")
             else:
@@ -240,7 +240,7 @@ with col_sources:
 
         st.divider()
 
-        llm_enabled = st.toggle("Choicir LLM Mode", value=False)
+        llm_enabled = st.toggle("Choose LLM Mode", value=False)
         if llm_enabled:
             st.success("Active Mode (RAG)")
         else:
@@ -248,12 +248,12 @@ with col_sources:
 
         st.divider()
 
-        st.markdown("#### Sources sélectionnées")
+        st.markdown("#### Selected Sources")
         if st.session_state.indexed_files:
             for name in st.session_state.indexed_files:
                 st.markdown(f"🖼️ {name}")
         else:
-            st.caption("Aucune source indexée.")
+            st.caption("No indexed source.")
 
 
 # ---------------------------------------------------------
@@ -273,7 +273,7 @@ with col_chat:
                     st.markdown(msg["content"])
 
         nb_sources = len(st.session_state.indexed_files)
-        st.caption(f"{nb_sources} source(s) disponible(s)")
+        st.caption(f"{nb_sources} disponible source(s)")
 
         question = st.chat_input("Ask a question or create something...")
 
